@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api
+spec:
+  containers:
+  - name: main
+    image: ghcr.io/thorstenhans/hotreloading-configuration-data-using-kubernetes-configmaps:33818c6f3d480d54e3f3379122c7582a7c5aad36
+    env:
+      - name: DOTNET_USE_POLLING_FILE_WATCHER
+        value: "true"
+      - name: ConfigurationFolder
+        value: /etc/sampleapi
+    volumeMounts:
+      - name: apiconfig
+        mountPath: /etc/sampleapi
+        readOnly: true
+    resources:
+      limits:
+        cpu: 50m
+        memory: 128Mi
+    ports:
+      - containerPort: 80
+  volumes:
+    - name: apiconfig
+      configMap:
+        name: api-config
+        optional: false
+        defaultMode: 0644
